@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FLOWRUN &mdash; Logika Komputasi Visual yang Elegan &amp; Sederhana</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --bg-surface: #0e131f;
+      --bg-card: rgba(18, 24, 38, 0.65);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(99, 102, 241, 0.35);
+      --accent-indigo: #6366f1;
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-amber: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow-x: hidden;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      background-image: 
+        radial-gradient(circle at 10% 15%, rgba(99, 102, 241, 0.09) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.07) 0%, transparent 45%),
+        radial-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 36px 36px;
+    }
+
+    code, pre, .font-mono {
+      font-family: 'JetBrains Mono', Consolas, monospace;
+    }
+
+    /* ========================================================================== */
+    /* ANIMASI MUNCUL PERLAHAN (FADE IN UP STAGGER) */
+    /* ========================================================================== */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .reveal-1 { animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both; }
+    .reveal-2 { animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both; }
+    .reveal-3 { animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both; }
+    .reveal-4 { animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both; }
+
+    /* ========================================================================== */
+    /* KARTU GLASSMORPHISM & EFEK HOVER MEWAH */
+    /* ========================================================================== */
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                  border-color 0.35s ease,
+                  box-shadow 0.35s ease;
+      position: relative;
+    }
+    
+    .glass-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 16px 35px -10px rgba(0, 0, 0, 0.4), 0 0 25px -8px rgba(99, 102, 241, 0.2);
+    }
+
+    .glow-indigo {
+      box-shadow: 0 0 45px -12px rgba(99, 102, 241, 0.3);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 40px -10px rgba(16, 185, 129, 0.3);
+    }
+
+    /* Gradient Text */
+    .text-gradient {
+      background: linear-gradient(135deg, #ffffff 25%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .text-gradient-indigo {
+      background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 50%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .text-gradient-emerald {
+      background: linear-gradient(135deg, #6ee7b7 0%, #10b981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+      outline: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 4px 20px rgba(79, 70, 229, 0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(79, 70, 229, 0.5);
+      background: linear-gradient(135deg, #4338ca, #4f46e5);
+    }
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.04);
+      color: #e2e8f0;
+      border: 1px solid var(--border-subtle);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.22);
+      transform: translateY(-2px);
+    }
+
+    /* Pill Badges */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 9999px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: 1px solid var(--border-subtle);
+    }
+    .pill-indigo {
+      background: rgba(99, 102, 241, 0.12);
+      color: #818cf8;
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+    .pill-emerald {
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .pill-amber {
+      background: rgba(245, 158, 11, 0.12);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    /* Navigation */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(7, 9, 14, 0.8);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    /* SVG Node Highlighting */
+    .flow-node {
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .flow-node:hover rect,
+    .flow-node:hover polygon {
+      stroke: #818cf8 !important;
+      stroke-width: 2px !important;
+    }
+    .flow-node.active-node rect,
+    .flow-node.active-node polygon {
+      stroke: #38bdf8 !important;
+      stroke-width: 2.8px !important;
+      filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.7));
+    }
+    .flow-node.active-node text {
+      font-weight: 700;
+      fill: #ffffff !important;
+    }
+    .flow-node.success-node rect,
+    .flow-node.success-node polygon {
+      stroke: #10b981 !important;
+      stroke-width: 2.8px !important;
+      filter: drop-shadow(0 0 16px rgba(16, 185, 129, 0.8));
+    }
+
+    /* Tab switcher for Challenge slides */
+    .slide-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      background: transparent;
+    }
+    .slide-tab:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .slide-tab.active {
+      color: #fff;
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 18px rgba(99, 102, 241, 0.2);
+    }
+
+    /* Variable pulse update */
+    .val-updated {
+      animation: flashVal 0.75s ease-out;
+    }
+    @keyframes flashVal {
+      0% {
+        background-color: rgba(16, 185, 129, 0.4);
+        color: #6ee7b7;
+      }
+      100% {
+        background-color: transparent;
+      }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080b12;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <div style="max-width: 1240px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;">
+      
+      <!-- Brand & Founder Badge -->
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <div style="width: 40px; height: 40px; border-radius: 11px; background: linear-gradient(135deg, #6366f1, #06b6d4); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 18px rgba(99, 102, 241, 0.45);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline>
+          </svg>
+        </div>
+        <div>
+          <div style="font-weight: 800; font-size: 1.15rem; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px;">
+            <span>FLOWRUN</span>
+            <span style="font-size: 0.65rem; padding: 2px 7px; border-radius: 5px; background: rgba(99, 102, 241, 0.2); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.35); font-weight: 700;">EDUKASI VISUAL</span>
+          </div>
+          <div style="font-size: 0.72rem; color: var(--text-dim); letter-spacing: 0.04em;">BY KINETIX ENTERPRISE</div>
+        </div>
+      </div>
+
+      <!-- Nav Links -->
+      <div style="display: flex; align-items: center; gap: 30px;" class="desktop-nav">
+        <a href="#pengenalan" style="color: var(--text-muted); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: color 0.2s;">Konsep Dasar</a>
+        <a href="#simulator" style="color: var(--text-muted); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: color 0.2s;">Simulator Interaktif</a>
+        <a href="#tantangan" style="color: #a5b4fc; text-decoration: none; font-size: 0.88rem; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+          <span>Tantangan Sekolah</span>
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #6366f1;"></span>
+        </a>
+        <a href="#perkalian" style="color: var(--text-muted); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: color 0.2s;">Perkalian Biasa</a>
+      </div>
+
+      <!-- Action -->
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button id="soundToggleBtn" class="btn btn-secondary" style="padding: 8px 14px; font-size: 0.8rem;" title="Audio Suara Taktil">
+          <span id="soundIcon">🔊</span>
+          <span id="soundLabel">Audio Nyala</span>
+        </button>
+        <a href="#simulator" class="btn btn-primary" style="font-size: 0.84rem; padding: 9px 18px;">
+          Coba Sekarang &rarr;
+        </a>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <header style="max-width: 1100px; margin: 0 auto; padding: 85px 24px 50px; text-align: center; position: relative;">
+    
+    <div class="reveal-1" style="display: inline-flex; margin-bottom: 22px;">
+      <div class="pill pill-indigo">
+        <span style="font-size: 1.1em;">✨</span> Logika Komputasi yang Mudah Dipahami
+      </div>
+    </div>
+    
+    <h1 class="reveal-2 text-gradient" style="font-size: clamp(2.3rem, 5vw, 4.1rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.03em; margin-bottom: 22px;">
+      Belajar Coding Tidak Harus Pusing.<br />
+      <span class="text-gradient-indigo">Flowrun Mengubah Logika Menjadi Gambar Nyata.</span>
+    </h1>
+
+    <p class="reveal-3" style="max-width: 720px; margin: 0 auto 36px; font-size: clamp(1rem, 1.8vw, 1.2rem); color: var(--text-muted); font-weight: 400; line-height: 1.8;">
+      Sebagai programmer profesional, saya meyakini bahwa hal terpenting dalam coding bukanlah menghafal titik-koma, melainkan <strong>memahami bagaimana data mengalir</strong>. Dari pertambahan sederhana hingga percabangan syarat lulus sekolah, mari lihat bagaimana komputer berpikir!
+    </p>
+
+    <div class="reveal-4" style="display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 50px;">
+      <a href="#simulator" class="btn btn-primary" style="padding: 13px 28px; font-size: 0.96rem;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        Jalankan Contoh Penjumlahan
+      </a>
+      <a href="#tantangan" class="btn btn-secondary" style="padding: 13px 26px; font-size: 0.96rem;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
+        Lihat Tantangan Nilai Lulus
+      </a>
+    </div>
+
+    <!-- 3 Simple Pillars -->
+    <div class="reveal-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; max-width: 950px; margin: 0 auto; text-align: left;">
+      <div class="glass-card" style="padding: 22px 24px;">
+        <div style="font-size: 1.8rem; margin-bottom: 8px;">🟢</div>
+        <div style="font-weight: 700; font-size: 1.05rem; color: #fff;">1. Kotak Mulai &amp; Selesai</div>
+        <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 4px;">Berbentuk oval/kapsul. Menandakan di mana komputer mulai membaca instruksi dan kapan harus berhenti.</div>
+      </div>
+      <div class="glass-card" style="padding: 22px 24px;">
+        <div style="font-size: 1.8rem; margin-bottom: 8px;">🟦</div>
+        <div style="font-weight: 700; font-size: 1.05rem; color: #38bdf8;">2. Kotak Proses (Hitung)</div>
+        <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 4px;">Berbentuk persegi panjang. Tempat komputer melakukan hitungan nyata seperti <code style="color:#6ee7b7">hasil = a + b</code>.</div>
+      </div>
+      <div class="glass-card" style="padding: 22px 24px;">
+        <div style="font-size: 1.8rem; margin-bottom: 8px;">🔶</div>
+        <div style="font-weight: 700; font-size: 1.05rem; color: #fbbf24;">3. Belah Ketupat IF (Pilihan)</div>
+        <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 4px;">Pertanyaan penentu: Jika BENAR ambil jalur kanan, jika SALAH ambil jalur kiri. Sangat mudah!</div>
+      </div>
+    </div>
+
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION PENGENALAN: APA ITU ALGORITMA & APA ITU FLOWRUN? -->
+  <!-- ========================================================================= -->
+  <section id="pengenalan" style="max-width: 1200px; margin: 20px auto 60px; padding: 40px 24px; position: relative;">
+    
+    <div style="text-align: center; margin-bottom: 40px;">
+      <div class="pill pill-indigo" style="margin-bottom: 12px;">
+        📚 PONDASI UTAMA PROGRAMMER
+      </div>
+      <h2 style="font-size: clamp(2rem, 3.8vw, 2.8rem); font-weight: 800; letter-spacing: -0.02em;">
+        Pahami Dua Konsep Ini Sebelum Memulai
+      </h2>
+      <p style="max-width: 720px; margin: 10px auto 0; color: var(--text-muted); font-size: 0.98rem; line-height: 1.7;">
+        Di perusahaan teknologi besar sekalipun, semua aplikasi canggih (seperti game, media sosial, hingga kecerdasan buatan) dibangun di atas dua hal dasar ini: <strong>Algoritma</strong> dan <strong>Visualisasi Alur (Flowrun)</strong>.
+      </p>
+    </div>
+
+    <!-- Dual Explanation Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 28px;">
+      
+      <!-- CARD 1: APA ITU ALGORITMA? -->
+      <div class="glass-card" style="padding: 32px; border-left: 4px solid #6366f1;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
+          <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.35); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+            🧩
+          </div>
+          <span style="font-family: monospace; font-size: 0.78rem; font-weight: 700; color: #818cf8; background: rgba(99, 102, 241, 0.1); padding: 4px 10px; border-radius: 6px;">KONSEP 01</span>
+        </div>
+
+        <h3 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 12px;">
+          Apa Itu Algoritma?
+        </h3>
+        
+        <p style="color: #cbd5e1; font-size: 0.94rem; line-height: 1.75; margin-bottom: 16px;">
+          Sederhananya: <strong>Algoritma adalah resep atau urutan langkah-langkah logis</strong> untuk menyelesaikan suatu masalah dari awal sampai tuntas.
+        </p>
+
+        <!-- Everyday Analogy Box -->
+        <div style="background: rgba(10, 15, 26, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 18px; margin-bottom: 18px;">
+          <div style="font-size: 0.8rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; margin-bottom: 6px;">🍜 Analogi Sehari-hari: Resep Mi Instan</div>
+          <div style="font-size: 0.86rem; color: #94a3b8; line-height: 1.65;">
+            Kamu tidak mungkin menyajikan mi sebelum airnya mendidih. Langkahnya harus urut: <br />
+            <code>(1) Rebus air &rarr; (2) Masukkan mi &rarr; (3) Tuang bumbu &rarr; (4) Hidangkan</code>.<br />
+            Urutan langkah itulah yang disebut <strong>Algoritma</strong>!
+          </div>
+        </div>
+
+        <div style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.7;">
+          <strong style="color: #fff;">Mengapa Komputer Butuh Algoritma?</strong><br />
+          Komputer sebenarnya tidak punya akal pikiran sendiri. Komputer adalah mesin yang sangat patuh. Jika instruksi kita loncat atau salah urut, komputer akan bingung dan menghasilkan error. Karena itu, algoritma harus <em>jelas, berurutan, dan pasti</em>.
+        </div>
+      </div>
+
+      <!-- CARD 2: APA ITU FLOWRUN? -->
+      <div class="glass-card" style="padding: 32px; border-left: 4px solid #06b6d4;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
+          <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.35); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+            ⚡
+          </div>
+          <span style="font-family: monospace; font-size: 0.78rem; font-weight: 700; color: #22d3ee; background: rgba(6, 182, 212, 0.1); padding: 4px 10px; border-radius: 6px;">KONSEP 02</span>
+        </div>
+
+        <h3 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 12px;">
+          Apa Itu Flowrun?
+        </h3>
+
+        <p style="color: #cbd5e1; font-size: 0.94rem; line-height: 1.75; margin-bottom: 16px;">
+          Jika algoritma adalah resepnya, maka <strong>Flowrun adalah panggung visual tempat resep itu berjalan dan bisa kamu amati secara nyata!</strong>
+        </p>
+
+        <!-- Flowrun Advantage Box -->
+        <div style="background: rgba(10, 15, 26, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 18px; margin-bottom: 18px;">
+          <div style="font-size: 0.8rem; font-weight: 700; color: #34d399; text-transform: uppercase; margin-bottom: 6px;">✨ Solusi Mengatasi Pusing Belajar Coding</div>
+          <div style="font-size: 0.86rem; color: #94a3b8; line-height: 1.65;">
+            Coding teks biasa penuh dengan kurung kurawal <code>{ }</code> dan titik koma <code>;</code> yang membingungkan. Flowrun mengubahnya menjadi <strong>diagram kotak dan panah alur</strong> yang menyala saat dieksekusi!
+          </div>
+        </div>
+
+        <div style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.7;">
+          <strong style="color: #fff;">3 Kekuatan Super Flowrun:</strong>
+          <ul style="margin-top: 6px; padding-left: 20px; line-height: 1.75;">
+            <li><strong>Kotak Menyala (*Glowing*):</strong> Kamu tahu persis instruksi mana yang sedang dibaca komputer saat ini.</li>
+            <li><strong>Memori Transparan:</strong> Kamu bisa melihat angka di dalam wadah variabel berganti secara langsung.</li>
+            <li><strong>Mode Langkah (*Step-by-Step*):</strong> Menjalankan alur selangkah demi selangkah seperti menonton video dalam gerak lambat (*slow motion*).</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION 1: SIMULATOR INTERAKTIF PENJUMLAHAN & SYARAT LULUS -->
+  <!-- ========================================================================= -->
+  <section id="simulator" style="max-width: 1200px; margin: 50px auto; padding: 40px 24px;">
+    
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+      <div>
+        <div class="pill pill-emerald" style="margin-bottom: 8px;">Simulator Alur Langsung</div>
+        <h2 style="font-size: 2.1rem; font-weight: 800; letter-spacing: -0.02em;">Pilih Contoh Alur</h2>
+        <p style="color: var(--text-muted); font-size: 0.94rem;">Pilih contoh di bawah ini, lalu klik tombol <strong>"Langkah Berikutnya (Step)"</strong> untuk melihat kotak menyala satu per satu!</p>
+      </div>
+      
+      <!-- Preset switch -->
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button id="modeTambahBtn" class="slide-tab active">
+          <span>➕ 1. Pertambahan (a + b)</span>
+        </button>
+        <button id="modeCekBtn" class="slide-tab">
+          <span>⚖️ 2. Cek Positif / Negatif (IF)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Simulator Workspace -->
+    <div class="glass-card glow-indigo" style="padding: 28px; border: 1px solid rgba(255, 255, 255, 0.1);">
+      
+      <!-- Interactive Inputs Bar -->
+      <div style="background: rgba(10, 14, 24, 0.8); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        
+        <div id="inputControlsGroup" style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <!-- Dynamically set by JS (e.g. Input A, Input B or Nilai Ujian) -->
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button id="stepBtn" class="btn btn-primary" style="padding: 8px 18px; font-size: 0.86rem;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+            Langkah Berikutnya (Step)
+          </button>
+          
+          <button id="autoPlayBtn" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.86rem;">
+            <span id="autoPlayLabel">▶ Putar Otomatis</span>
+          </button>
+          
+          <button id="resetBtn" class="btn btn-secondary" style="padding: 8px 14px; font-size: 0.86rem;">
+            Ulangi (Reset)
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Main Stage: SVG Diagram (Left) & Inspector Table (Right) -->
+      <div style="display: grid; grid-template-columns: 1.25fr 1fr; gap: 24px; min-height: 420px;">
+        
+        <!-- SVG Canvas -->
+        <div style="background: #090d16; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+          
+          <div style="position: absolute; top: 12px; left: 16px; font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">
+            Visual Diagram Flowrun
+          </div>
+
+          <svg id="simulatorSvg" width="360" height="360" viewBox="0 0 360 360" style="overflow: visible;">
+            <!-- Rendered by JS -->
+          </svg>
+        </div>
+
+        <!-- Right Side: Variables & Step Explanation -->
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          
+          <!-- Variable Memory Inspector -->
+          <div style="background: #090d16; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 18px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+              <span style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #818cf8; display: flex; align-items: center; gap: 6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                Isi Memori Variabel
+              </span>
+              <span id="stepBadge" style="font-size: 0.75rem; color: var(--text-dim); font-family: monospace;">Langkah: 0</span>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem;">
+              <thead>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.08); text-align: left; color: var(--text-dim); font-size: 0.72rem;">
+                  <th style="padding: 6px 8px;">NAMA VARIABEL</th>
+                  <th style="padding: 6px 8px;">NILAI SAAT INI</th>
+                  <th style="padding: 6px 8px;">KETERANGAN</th>
+                </tr>
+              </thead>
+              <tbody id="simVarTableBody">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Step Guide / Story Explanation -->
+          <div style="background: #090d16; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 18px; flex: 1; display: flex; flex-direction: column;">
+            <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #38bdf8; margin-bottom: 8px;">
+              Apa yang Sedang Terjadi?
+            </span>
+            <div id="simExplanation" style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.6; flex: 1;">
+              Siap! Tekan tombol <strong>"Langkah Berikutnya (Step)"</strong> untuk menjalankan alur pertama.
+            </div>
+            <div id="simFinalVerdict" style="display: none; margin-top: 10px; padding: 10px 14px; border-radius: 8px; font-weight: 700; font-size: 0.95rem;">
+              <!-- Result pill -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION 2: TANTANGAN PERTENGAHAN DENGAN MODEL SLIDE (SOAL -> JAWABAN) -->
+  <!-- ========================================================================= -->
+  <section id="tantangan" style="max-width: 1200px; margin: 80px auto; padding: 40px 24px; position: relative;">
+    
+    <div style="text-align: center; margin-bottom: 36px;">
+      <div class="pill pill-amber" style="margin-bottom: 12px;">
+        🎯 Uji Pemahaman Mandiri
+      </div>
+      <h2 style="font-size: clamp(1.9rem, 3.5vw, 2.7rem); font-weight: 800; letter-spacing: -0.02em;">
+        Tantangan: Menentukan Remedial vs Lulus
+      </h2>
+      <p style="max-width: 680px; margin: 10px auto 0; color: var(--text-muted); font-size: 0.98rem;">
+        Coba jawab soal di bawah ini terlebih dahulu di kepalamu. Setelah itu, buka slide pembahasan untuk melihat bagaimana diagram Flowrun-nya dibuat!
+      </p>
+    </div>
+
+    <!-- Challenge Card Shell -->
+    <div class="glass-card" style="padding: 34px; border: 1px solid rgba(245, 158, 11, 0.35); background: linear-gradient(145deg, rgba(18, 24, 38, 0.9), rgba(10, 14, 23, 0.98));">
+      
+      <!-- Slide Tab Selector -->
+      <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 30px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 16px;">
+        <button id="challengeTabQuestion" class="slide-tab active" style="font-size: 0.95rem;">
+          <span>📝 Slide 1: Soal Tantangan</span>
+        </button>
+        <button id="challengeTabAnswer" class="slide-tab" style="font-size: 0.95rem;">
+          <span>💡 Slide 2: Kunci Jawaban &amp; Pembahasan Flowchart</span>
+        </button>
+      </div>
+
+      <!-- SLIDE 1: SOAL TANTANGAN (TIDAK ADA JAWABAN LANGSUNG) -->
+      <div id="challengeSlide1" style="display: block;">
+        
+        <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px; align-items: start;">
+          
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+              <span class="pill pill-amber">Kasus Nilai Ujian Siswa</span>
+            </div>
+            
+            <h3 style="font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 12px;">
+              Bagaimana Menentukan Siswa Remedial atau Lulus?
+            </h3>
+
+            <p style="color: #cbd5e1; font-size: 0.95rem; margin-bottom: 16px; line-height: 1.7;">
+              Di sekolah, nilai batas kelulusan (KKM) untuk mata pelajaran Matematika adalah <strong>75</strong>.
+            </p>
+
+            <div style="background: rgba(10, 15, 26, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+              <div style="font-weight: 700; color: #fbbf24; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 10px;">Aturan Kelulusan:</div>
+              <ul style="color: #e2e8f0; font-size: 0.92rem; padding-left: 20px; line-height: 1.8;">
+                <li>Jika <code>nilai &gt;= 75</code>, maka siswa dinyatakan <strong style="color: #34d399;">"Lulus"</strong>.</li>
+                <li>Jika <code>nilai &lt; 75</code>, maka siswa harus <strong style="color: #f43f5e;">"Remedial"</strong>.</li>
+              </ul>
+            </div>
+
+            <div style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+              <strong>Pertanyaan untukmu:</strong><br />
+              Jika seorang siswa bernama Budi mendapat nilai <strong>72</strong>, dan siswa bernama Siti mendapat nilai <strong>88</strong>:
+              <ol style="margin-top: 8px; padding-left: 20px; line-height: 1.8;">
+                <li>Kondisi apa yang ditulis di dalam kotak belah ketupat IF?</li>
+                <li>Ke cabang manakah alur nilai Budi akan berbelok?</li>
+                <li>Ke cabang manakah alur nilai Siti akan berbelok?</li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- Thought Experiment Prompt Box -->
+          <div style="background: rgba(14, 20, 32, 0.95); border: 1px dashed rgba(245, 158, 11, 0.4); border-radius: 16px; padding: 26px; text-align: center;">
+            <div style="font-size: 2.4rem; margin-bottom: 12px;">🤔</div>
+            <h4 style="font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 10px;">
+              Sudah Memikirkan Jawabannya?
+            </h4>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.65; margin-bottom: 24px;">
+              Sebelum melihat jawabannya, cobalah bayangkan di mana panah True (Benar) dan panah False (Salah) akan mengarah. Jika sudah yakin, klik tombol di bawah untuk melihat diagram alur resminya!
+            </p>
+            <button id="openAnswerBtn" class="btn btn-primary" style="padding: 12px 26px; font-size: 0.95rem; width: 100%;">
+              <span>Buka Slide Kunci Jawaban &rarr;</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- SLIDE 2: KUNCI JAWABAN & PEMBAHASAN MENDALAM -->
+      <div id="challengeSlide2" style="display: none; animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);">
+        
+        <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px; align-items: center;">
+          
+          <!-- Visual SVG Diagram of Solution -->
+          <div style="background: #090d16; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div style="font-size: 0.72rem; color: #34d399; font-weight: 700; text-transform: uppercase; margin-bottom: 12px;">
+              Diagram Kunci Jawaban: IF (Nilai &gt;= 75)
+            </div>
+
+            <svg width="340" height="320" viewBox="0 0 340 320" style="overflow: visible;">
+              <defs>
+                <marker id="sol-arr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748b"/>
+                </marker>
+              </defs>
+
+              <!-- Lines -->
+              <path d="M 170 30 L 170 70" stroke="#475569" stroke-width="2" marker-end="url(#sol-arr)" />
+              
+              <!-- True Branch (Right) -->
+              <path d="M 235 95 L 280 95 L 280 155" stroke="#10b981" stroke-width="2" marker-end="url(#sol-arr)" />
+              <text x="240" y="88" fill="#34d399" font-size="11" font-weight="700" font-family="monospace">BENAR</text>
+
+              <!-- False Branch (Left) -->
+              <path d="M 105 95 L 60 95 L 60 155" stroke="#f43f5e" stroke-width="2" marker-end="url(#sol-arr)" />
+              <text x="68" y="88" fill="#f87171" font-size="11" font-weight="700" font-family="monospace">SALAH</text>
+
+              <!-- Merging back to Selesai -->
+              <path d="M 280 195 L 280 250 L 195 250" stroke="#475569" stroke-width="2" />
+              <path d="M 60 195 L 60 250 L 145 250" stroke="#475569" stroke-width="2" marker-end="url(#sol-arr)" />
+              <path d="M 170 250 L 170 270" stroke="#475569" stroke-width="2" marker-end="url(#sol-arr)" />
+
+              <!-- Nodes -->
+              <!-- START -->
+              <rect x="120" y="6" width="100" height="26" rx="13" fill="#1e293b" stroke="#475569" stroke-width="1.5" />
+              <text x="170" y="23" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="monospace">MULAI</text>
+
+              <!-- IF Condition Diamond -->
+              <polygon points="170,70 235,95 170,120 105,95" fill="#1a2234" stroke="#fbbf24" stroke-width="2" />
+              <text x="170" y="99" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="monospace">nilai &gt;= 75 ?</text>
+
+              <!-- Kotak Lulus (Right) -->
+              <rect x="225" y="155" width="110" height="38" rx="8" fill="rgba(16, 185, 129, 0.15)" stroke="#10b981" stroke-width="1.8" />
+              <text x="280" y="178" text-anchor="middle" fill="#6ee7b7" font-size="11" font-weight="700">Cetak "LULUS"</text>
+
+              <!-- Kotak Remedial (Left) -->
+              <rect x="5" y="155" width="110" height="38" rx="8" fill="rgba(244, 63, 94, 0.15)" stroke="#f43f5e" stroke-width="1.8" />
+              <text x="60" y="178" text-anchor="middle" fill="#fca5a5" font-size="11" font-weight="700">Cetak "REMEDIAL"</text>
+
+              <!-- SELESAI -->
+              <rect x="120" y="270" width="100" height="26" rx="13" fill="#1e293b" stroke="#475569" stroke-width="1.5" />
+              <text x="170" y="287" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="monospace">SELESAI</text>
+            </svg>
+
+          </div>
+
+          <!-- Explanation Text -->
+          <div>
+            <div class="pill pill-emerald" style="margin-bottom: 10px;">Pembahasan Lengkap</div>
+            <h3 style="font-size: 1.35rem; font-weight: 700; color: #fff; margin-bottom: 12px;">
+              Mengapa Alurnya Dibuat Seperti Ini?
+            </h3>
+
+            <div style="color: #cbd5e1; font-size: 0.92rem; line-height: 1.7; space-y: 12px;">
+              <p>
+                <strong>1. Kondisi di Belah Ketupat:</strong> Kita menulis <code>nilai &gt;= 75</code>. Tanda <code>&gt;=</code> artinya "lebih besar dari atau sama dengan". Jadi nilai 75 itu sendiri sudah terhitung lulus!
+              </p>
+              <p style="margin-top: 10px;">
+                <strong>2. Kasus Budi (Nilai 72):</strong> Komputer mengecek: <em>"Apakah 72 &gt;= 75?"</em> Jawabannya adalah <strong>SALAH (False)</strong>. Maka panah merah ke kiri aktif &rarr; Komputer mencetak <strong>"REMEDIAL"</strong>.
+              </p>
+              <p style="margin-top: 10px;">
+                <strong>3. Kasus Siti (Nilai 88):</strong> Komputer mengecek: <em>"Apakah 88 &gt;= 75?"</em> Jawabannya adalah <strong>BENAR (True)</strong>. Maka panah hijau ke kanan aktif &rarr; Komputer mencetak <strong>"LULUS"</strong>.
+              </p>
+              <p style="margin-top: 10px;">
+                <strong>4. Muara Akhir:</strong> Perhatikan bahwa setelah mencetak pesan, kedua jalur kembali bersatu menuju kotak <strong>SELESAI</strong>. Ini prinsip penting pemrograman: setiap alur harus memiliki akhir yang teratur!
+              </p>
+            </div>
+
+            <button id="backToQuestionBtn" class="btn btn-secondary" style="margin-top: 20px; font-size: 0.85rem; padding: 8px 16px;">
+              &larr; Kembali ke Lembar Soal
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION 3: PERKALIAN BIASA DENGAN FLOWRUN (ASSIGN PERKALIAN LANGSUNG) -->
+  <!-- ========================================================================= -->
+  <section id="perkalian" style="max-width: 1200px; margin: 80px auto; padding: 40px 24px;">
+    
+    <div style="text-align: center; margin-bottom: 36px;">
+      <div class="pill pill-indigo" style="margin-bottom: 12px;">
+        💡 Logika Perkalian Biasa
+      </div>
+      <h2 style="font-size: clamp(1.9rem, 3.5vw, 2.7rem); font-weight: 800; letter-spacing: -0.02em;">
+        Perkalian di Flowrun: Assign Perkalian Biasa
+      </h2>
+      <p style="max-width: 680px; margin: 10px auto 0; color: var(--text-muted); font-size: 0.98rem;">
+        Tidak perlu loop atau perulangan yang rumit! Untuk mengalikan angka di Flowrun, kita cukup menggunakan <strong>kotak proses biasa (Assign)</strong> dengan simbol bintang <code>*</code>.
+      </p>
+    </div>
+
+    <!-- Multiply Card Shell -->
+    <div class="glass-card" style="padding: 34px; border: 1px solid rgba(99, 102, 241, 0.35); background: linear-gradient(145deg, rgba(18, 24, 38, 0.9), rgba(10, 14, 23, 0.98));">
+      
+      <!-- Slide Tab Selector for Multiply -->
+      <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 30px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 16px;">
+        <button id="multTabQuestion" class="slide-tab active" style="font-size: 0.95rem;">
+          <span>📝 Slide 1: Soal Perkalian Biasa</span>
+        </button>
+        <button id="multTabAnswer" class="slide-tab" style="font-size: 0.95rem;">
+          <span>💡 Slide 2: Kunci Jawaban &amp; Flowchart Perkalian</span>
+        </button>
+      </div>
+
+      <!-- MULTIPLY SLIDE 1: SOAL -->
+      <div id="multSlide1" style="display: block;">
+        <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px; align-items: start;">
+          <div>
+            <span class="pill pill-indigo" style="margin-bottom: 12px;">Studi Kasus Matematika SMP</span>
+            <h3 style="font-size: 1.35rem; font-weight: 700; color: #fff; margin-bottom: 12px;">
+              Menghitung Luas Persegi Panjang: 6 &times; 4
+            </h3>
+            <p style="color: #cbd5e1; font-size: 0.94rem; line-height: 1.7; margin-bottom: 16px;">
+              Kamu diminta membuat diagram Flowrun untuk menghitung luas persegi panjang dengan rumus matematika:
+            </p>
+            <div style="background: rgba(10, 15, 26, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 18px; margin-bottom: 18px; font-family: monospace; font-size: 0.95rem; color: #38bdf8;">
+              panjang = 6<br />
+              lebar = 4<br />
+              luas = panjang * lebar
+            </div>
+            <div style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+              <strong>Pertanyaan untukmu:</strong>
+              <ol style="margin-top: 8px; padding-left: 20px; line-height: 1.8;">
+                <li>Mengapa di dalam komputer simbol kali ditulis menggunakan <code>*</code> (bintang) dan bukan huruf <code>x</code>?</li>
+                <li>Bentuk kotak apa yang dipakai untuk rumus <code>luas = panjang * lebar</code>?</li>
+                <li>Apakah kita butuh belah ketupat IF atau perulangan? Ataukah alurnya mengalir lurus dari atas ke bawah?</li>
+              </ol>
+            </div>
+          </div>
+
+          <div style="background: rgba(14, 20, 32, 0.95); border: 1px dashed rgba(99, 102, 241, 0.4); border-radius: 16px; padding: 26px; text-align: center;">
+            <div style="font-size: 2.4rem; margin-bottom: 12px;">📐</div>
+            <h4 style="font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 10px;">
+              Sudah Membayangkan Alurnya?
+            </h4>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.65; margin-bottom: 24px;">
+              Perkalian biasa adalah operasi paling sederhana di Flowrun: cukup masukkan angka, kalikan langsung dalam kotak proses persegi panjang, lalu cetak hasilnya!
+            </p>
+            <button id="openMultAnswerBtn" class="btn btn-primary" style="padding: 12px 26px; font-size: 0.95rem; width: 100%;">
+              <span>Buka Slide Flowchart Perkalian &rarr;</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MULTIPLY SLIDE 2: JAWABAN & PEMBAHASAN -->
+      <div id="multSlide2" style="display: none; animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);">
+        <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px; align-items: center;">
+          
+          <!-- SVG Flowchart Perkalian Biasa (Linear Flow) -->
+          <div style="background: #090d16; border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div style="font-size: 0.72rem; color: #818cf8; font-weight: 700; text-transform: uppercase; margin-bottom: 12px;">
+              Diagram Alur: Assign Perkalian Biasa
+            </div>
+
+            <svg width="340" height="340" viewBox="0 0 340 340" style="overflow: visible;">
+              <defs>
+                <marker id="m-arr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748b"/>
+                </marker>
+              </defs>
+
+              <!-- Straight Connectors -->
+              <path d="M 170 38 L 170 75" stroke="#475569" stroke-width="2" marker-end="url(#m-arr)" />
+              <path d="M 170 115 L 170 155" stroke="#475569" stroke-width="2" marker-end="url(#m-arr)" />
+              <path d="M 170 195 L 170 235" stroke="#475569" stroke-width="2" marker-end="url(#m-arr)" />
+              <path d="M 170 275 L 170 305" stroke="#475569" stroke-width="2" marker-end="url(#m-arr)" />
+
+              <!-- Nodes -->
+              <!-- 1. START -->
+              <rect x="120" y="10" width="100" height="28" rx="14" fill="#1e293b" stroke="#475569" stroke-width="1.5" />
+              <text x="170" y="28" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="monospace">1. MULAI</text>
+
+              <!-- 2. INPUT -->
+              <rect x="80" y="75" width="180" height="40" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+              <text x="170" y="100" text-anchor="middle" fill="#93c5fd" font-size="11" font-family="monospace">2. Input panjang=6, lebar=4</text>
+
+              <!-- 3. ASSIGN PERKALIAN -->
+              <rect x="75" y="155" width="190" height="40" rx="8" fill="rgba(99, 102, 241, 0.15)" stroke="#6366f1" stroke-width="2" />
+              <text x="170" y="180" text-anchor="middle" fill="#a5b4fc" font-size="11" font-weight="700" font-family="monospace">3. luas = panjang * lebar</text>
+
+              <!-- 4. OUTPUT -->
+              <rect x="85" y="235" width="170" height="40" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+              <text x="170" y="260" text-anchor="middle" fill="#6ee7b7" font-size="11" font-weight="700" font-family="monospace">4. Tampilkan luas (24)</text>
+
+              <!-- 5. END -->
+              <rect x="120" y="305" width="100" height="28" rx="14" fill="#1e293b" stroke="#475569" stroke-width="1.5" />
+              <text x="170" y="323" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="monospace">5. SELESAI</text>
+            </svg>
+          </div>
+
+          <!-- Explanation -->
+          <div>
+            <div class="pill pill-emerald" style="margin-bottom: 10px;">Kunci Jawaban &amp; Pembahasan</div>
+            <h3 style="font-size: 1.35rem; font-weight: 700; color: #fff; margin-bottom: 12px;">
+              Perkalian Langsung (Assign)
+            </h3>
+            <div style="color: #cbd5e1; font-size: 0.92rem; line-height: 1.7;">
+              <p>
+                <strong>1. Cukup Satu Kotak Proses:</strong> Operasi perkalian di Flowrun tidak butuh loop atau perulangan sama sekali. Kita cukup memakai kotak persegi panjang biasa untuk menulis <code>luas = panjang * lebar</code>.
+              </p>
+              <p style="margin-top: 10px;">
+                <strong>2. Simbol Bintang (<code>*</code>):</strong> Komputer selalu menggunakan simbol asterisk (<code>*</code>) untuk perkalian agar tidak tertukar dengan huruf variabel <code>x</code>.
+              </p>
+              <p style="margin-top: 10px;">
+                <strong>3. Eksekusi Seketika:</strong> Komputer langsung menghitung <code>6 * 4 = 24</code> dalam 1 langkah cepat, menyimpan angka 24 ke variabel <code>luas</code>, lalu mencetaknya ke layar. Alur mengalir lurus secara elegan!
+              </p>
+            </div>
+
+            <button id="backToMultQuestionBtn" class="btn btn-secondary" style="margin-top: 20px; font-size: 0.85rem; padding: 8px 16px;">
+              &larr; Kembali ke Soal Perkalian
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- FOUNDER'S NOTE -->
+  <section style="max-width: 900px; margin: 40px auto 100px; padding: 0 24px;">
+    <div class="glass-card" style="padding: 38px; border-left: 4px solid #6366f1; background: linear-gradient(135deg, rgba(18, 25, 42, 0.85), rgba(9, 13, 22, 0.95));">
+      <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 18px;">
+        <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #38bdf8); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.3rem; color: #fff;">
+          👨‍💻
+        </div>
+        <div>
+          <div style="font-weight: 700; font-size: 1.1rem; color: #fff;">Catatan dari Founder &amp; Chief Programmer</div>
+          <div style="font-size: 0.8rem; color: var(--text-dim);">Kinetix Technology Enterprise</div>
+        </div>
+      </div>
+
+      <blockquote style="font-style: italic; color: #cbd5e1; font-size: 1.02rem; line-height: 1.8; margin-bottom: 16px;">
+        "Programmer kelas dunia bukanlah orang yang mampu menulis kode paling rumit yang membingungkan orang lain. Programmer terbaik adalah mereka yang mampu mengurai masalah paling besar menjadi <strong>aliran logika sederhana yang bahkan anak SMP pun dapat memahaminya dengan senyuman</strong>. Jika kamu paham pertambahan dan logika IF, kamu sudah punya pondasi menjadi insinyur teknologi masa depan."
+      </blockquote>
+
+      <div style="font-size: 0.82rem; color: #818cf8; font-weight: 600;">
+        — Kinetix Technology Group • Belajar Coding Masa Depan
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="border-top: 1px solid var(--border-subtle); padding: 36px 24px; text-align: center; color: var(--text-dim); font-size: 0.82rem; background: #06080d;">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+      <div>
+        &copy; 2026 <strong>FLOWRUN FOR EVERYONE</strong>. Desain Elegan, Logika Sederhana &amp; Berkelas.
+      </div>
+      <div style="display: flex; gap: 20px;">
+        <a href="#pengenalan" style="color: var(--text-dim); text-decoration: none;">Konsep</a>
+        <a href="#simulator" style="color: var(--text-dim); text-decoration: none;">Simulator</a>
+        <a href="#tantangan" style="color: var(--text-dim); text-decoration: none;">Tantangan Nilai</a>
+        <a href="#perkalian" style="color: var(--text-dim); text-decoration: none;">Perkalian</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT: LOGIKA SIMULATOR & SLIDE INTERAKTIF -->
+  <!-- ========================================================================= -->
+  <script>
+    // --- SYNTHESIZER AUDIO TAKTIL (Web Audio API) ---
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+      }
+      playClick() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(300, this.ctx.currentTime + 0.04);
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.04);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.04);
+      }
+      playStep() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(480, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(640, this.ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.07, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.08);
+      }
+      playSuccess() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          const start = this.ctx.currentTime + idx * 0.08;
+          gain.gain.setValueAtTime(0.08, start);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + 0.3);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(start);
+          osc.stop(start + 0.3);
+        });
+      }
+    }
+
+    const sound = new SoundEngine();
+    const soundToggleBtn = document.getElementById('soundToggleBtn');
+    const soundIcon = document.getElementById('soundIcon');
+    const soundLabel = document.getElementById('soundLabel');
+    soundToggleBtn.addEventListener('click', () => {
+      sound.enabled = !sound.enabled;
+      if (sound.enabled) {
+        soundIcon.textContent = '🔊';
+        soundLabel.textContent = 'Audio Nyala';
+        sound.playClick();
+      } else {
+        soundIcon.textContent = '🔇';
+        soundLabel.textContent = 'Audio Bisu';
+      }
+    });
+
+    // =========================================================================
+    // SIMULATOR STATE & PRESETS (PERTAMBAHAN & SYARAT LULUS)
+    // =========================================================================
+    let currentMode = 'tambah'; // 'tambah' or 'lulus'
+    let simStep = 0;
+    let simInterval = null;
+    let simFinished = false;
+
+    // Data input user
+    let userA = 15;
+    let userB = 27;
+    let userAngka = 12;
+
+    // References
+    const inputControlsGroup = document.getElementById('inputControlsGroup');
+    const simulatorSvg = document.getElementById('simulatorSvg');
+    const simVarTableBody = document.getElementById('simVarTableBody');
+    const simExplanation = document.getElementById('simExplanation');
+    const simFinalVerdict = document.getElementById('simFinalVerdict');
+    const stepBadge = document.getElementById('stepBadge');
+    const stepBtn = document.getElementById('stepBtn');
+    const autoPlayBtn = document.getElementById('autoPlayBtn');
+    const autoPlayLabel = document.getElementById('autoPlayLabel');
+    const resetBtn = document.getElementById('resetBtn');
+    const modeTambahBtn = document.getElementById('modeTambahBtn');
+    const modeCekBtn = document.getElementById('modeCekBtn');
+
+    // Setup input bar based on active mode
+    function setupInputBar() {
+      if (currentMode === 'tambah') {
+        inputControlsGroup.innerHTML = `
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Angka A:</label>
+            <input type="number" id="inputA" value="${userA}" style="width:70px; background:#131a29; border:1px solid var(--border-subtle); color:#fff; padding:6px 10px; border-radius:8px; font-family:monospace; font-size:0.88rem; outline:none;" />
+          </div>
+          <span style="color:#64748b; font-size:1.1rem; font-weight:bold;">+</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Angka B:</label>
+            <input type="number" id="inputB" value="${userB}" style="width:70px; background:#131a29; border:1px solid var(--border-subtle); color:#fff; padding:6px 10px; border-radius:8px; font-family:monospace; font-size:0.88rem; outline:none;" />
+          </div>
+        `;
+        document.getElementById('inputA').addEventListener('change', (e) => {
+          userA = parseInt(e.target.value, 10) || 0;
+          resetSimulation();
+        });
+        document.getElementById('inputB').addEventListener('change', (e) => {
+          userB = parseInt(e.target.value, 10) || 0;
+          resetSimulation();
+        });
+      } else {
+        inputControlsGroup.innerHTML = `
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Masukkan Angka:</label>
+            <input type="number" id="inputAngka" value="${userAngka}" style="width:85px; background:#131a29; border:1px solid var(--border-subtle); color:#fff; padding:6px 10px; border-radius:8px; font-family:monospace; font-size:0.88rem; outline:none;" />
+          </div>
+          <span style="font-size:0.75rem; color:#94a3b8; background:rgba(255,255,255,0.05); padding:4px 8px; border-radius:6px;">Coba ketik angka positif (misal 15) atau negatif (misal -8)</span>
+        `;
+        document.getElementById('inputAngka').addEventListener('change', (e) => {
+          userAngka = parseInt(e.target.value, 10) || 0;
+          resetSimulation();
+        });
+      }
+    }
+
+    // Render SVG for Active Mode
+    function renderSimulatorSvg() {
+      simulatorSvg.innerHTML = '';
+      
+      const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      defs.innerHTML = `
+        <marker id="sim-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748b"/>
+        </marker>
+      `;
+      simulatorSvg.appendChild(defs);
+
+      if (currentMode === 'tambah') {
+        // Simple straight flow: Mulai -> Input a,b -> hasil = a + b -> Tampilkan hasil -> Selesai
+        simulatorSvg.innerHTML += `
+          <!-- Connectors -->
+          <path d="M 180 38 L 180 75" stroke="#334155" stroke-width="2" marker-end="url(#sim-arrow)" />
+          <path d="M 180 115 L 180 155" stroke="#334155" stroke-width="2" marker-end="url(#sim-arrow)" />
+          <path d="M 180 195 L 180 235" stroke="#334155" stroke-width="2" marker-end="url(#sim-arrow)" />
+          <path d="M 180 275 L 180 310" stroke="#334155" stroke-width="2" marker-end="url(#sim-arrow)" />
+
+          <!-- Nodes -->
+          <g id="node-t-start" class="flow-node active-node">
+            <rect x="125" y="10" width="110" height="28" rx="14" fill="#1e293b" stroke="#475569" stroke-width="1.5" />
+            <text x="180" y="28" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="monospace">1. MULAI</text>
+          </g>
+
+          <g id="node-t-input" class="flow-node">
+            <rect x="100" y="75" width="160" height="38" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+            <text x="180" y="99" text-anchor="middle" fill="#93c5fd" font-size="11" font-family="monospace">2. Baca a=${userA}, b=${userB}</text>
+          </g>
+
+          <g id="node-t-calc" class="flow-node">
+            <rect x="95" y="155" width="170" height="40" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+            <text x="180" y="180" text-anchor="middle" fill="#6ee7b7" font-size="11" font-weight="700" font-family="monospace">3. hasil = a + b</text>
+          </g>
+
+          <g id="node-t-output" class="flow-node">
+            <rect x="90" y="235" width="180" height="38" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+            <text x="180" y="259" text-anchor="middle" fill="#fbcfe8" font-size="11" font-family="monospace">4. Tampilkan "hasil"</text>
+          </g>
+
+          <g id="node-t-end" class="flow-node">
+            <rect x="125" y="310" width="110" height="28" rx="14" fill="#1e293b" stroke="#475569" stroke-width="1.5" />
+            <text x="180" y="328" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="monospace">5. SELESAI</text>
+          </g>
+        `;
+      } else {
+        // Branching flow: Mulai -> Input angka -> angka >= 0 ? -> POSITIF (Right) / NEGATIF (Left) -> Selesai
+        simulatorSvg.innerHTML += `
+          <!-- Connectors -->
+          <path d="M 180 35 L 180 70" stroke="#334155" stroke-width="2" marker-end="url(#sim-arrow)" />
+          <path d="M 180 108 L 180 140" stroke="#334155" stroke-width="2" marker-end="url(#sim-arrow)" />
+
+          <!-- True Branch (Right) -->
+          <path d="M 235 165 L 275 165 L 275 220" stroke="#10b981" stroke-width="2" marker-end="url(#sim-arrow)" />
+          <text x="240" y="158" fill="#34d399" font-size="10" font-weight="bold" font-family="monospace">Benar</text>
+
+          <!-- False Branch (Left) -->
+          <path d="M 125 165 L 85 165 L 85 220" stroke="#f43f5e" stroke-width="2" marker-end="url(#sim-arrow)" />
+          <text x="92" y="158" fill="#f87171" font-size="10" font-weight="bold" font-family="monospace">Salah</text>
+
+          <!-- Converge back to Selesai -->
+          <path d="M 275 260 L 275 295 L 200 295" stroke="#475569" stroke-width="2" />
+          <path d="M 85 260 L 85 295 L 160 295" stroke="#475569" stroke-width="2" />
+          <path d="M 180 295 L 180 315" stroke="#475569" stroke-width="2" marker-end="url(#sim-arrow)" />
+
+          <!-- Nodes -->
+          <g id="node-c-start" class="flow-node active-node">
+            <rect x="130" y="10" width="100" height="26" rx="13" fill="#1e293b" stroke="#475569" stroke-width="1.5" />
+            <text x="180" y="27" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="monospace">MULAI</text>
+          </g>
+
+          <g id="node-c-input" class="flow-node">
+            <rect x="105" y="70" width="150" height="38" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+            <text x="180" y="94" text-anchor="middle" fill="#93c5fd" font-size="11" font-family="monospace">angka = ${userAngka}</text>
+          </g>
+
+          <g id="node-c-cond" class="flow-node">
+            <polygon points="180,140 235,165 180,190 125,165" fill="#1a2234" stroke="#fbbf24" stroke-width="1.8" />
+            <text x="180" y="169" text-anchor="middle" fill="#fff" font-size="10.5" font-weight="700" font-family="monospace">angka &gt;= 0 ?</text>
+          </g>
+
+          <g id="node-c-positif" class="flow-node">
+            <rect x="220" y="220" width="110" height="40" rx="8" fill="rgba(16, 185, 129, 0.15)" stroke="#10b981" stroke-width="1.8" />
+            <text x="275" y="244" text-anchor="middle" fill="#6ee7b7" font-size="11" font-weight="700">"POSITIF"</text>
+          </g>
+
+          <g id="node-c-negatif" class="flow-node">
+            <rect x="30" y="220" width="110" height="40" rx="8" fill="rgba(244, 63, 94, 0.15)" stroke="#f43f5e" stroke-width="1.8" />
+            <text x="85" y="244" text-anchor="middle" fill="#fca5a5" font-size="11" font-weight="700">"NEGATIF"</text>
+          </g>
+
+          <g id="node-c-end" class="flow-node">
+            <rect x="130" y="315" width="100" height="26" rx="13" fill="#1e293b" stroke="#475569" stroke-width="1.5" />
+            <text x="180" y="332" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="monospace">SELESAI</text>
+          </g>
+        `;
+      }
+    }
+
+    // Highlight Node
+    function highlightSimNode(nodeId, isSuccess = false) {
+      document.querySelectorAll('#simulatorSvg .flow-node').forEach(el => {
+        el.classList.remove('active-node', 'success-node');
+      });
+      const target = document.getElementById(nodeId);
+      if (target) {
+        target.classList.add(isSuccess ? 'success-node' : 'active-node');
+      }
+    }
+
+    // Step Engine
+    function executeSimStep() {
+      if (simFinished) {
+        stopAutoPlay();
+        return;
+      }
+
+      simStep++;
+      stepBadge.textContent = `Langkah: ${simStep}`;
+      sound.playStep();
+
+      if (currentMode === 'tambah') {
+        // Steps for Penjumlahan
+        if (simStep === 1) {
+          highlightSimNode('node-t-input');
+          simVarTableBody.innerHTML = `
+            <tr><td style="padding:6px 8px; color:#818cf8;">a</td><td style="padding:6px 8px; font-weight:bold; color:#fff;" class="val-updated">${userA}</td><td style="padding:6px 8px; color:#94a3b8;">Input angka pertama</td></tr>
+            <tr><td style="padding:6px 8px; color:#818cf8;">b</td><td style="padding:6px 8px; font-weight:bold; color:#fff;" class="val-updated">${userB}</td><td style="padding:6px 8px; color:#94a3b8;">Input angka kedua</td></tr>
+            <tr><td style="padding:6px 8px; color:#818cf8;">hasil</td><td style="padding:6px 8px; color:#64748b;">(belum dihitung)</td><td style="padding:6px 8px; color:#64748b;">Menunggu proses</td></tr>
+          `;
+          simExplanation.innerHTML = `Komputer membaca input: variabel <code>a = ${userA}</code> dan <code>b = ${userB}</code> sudah siap di dalam memori.`;
+        } else if (simStep === 2) {
+          const sum = userA + userB;
+          highlightSimNode('node-t-calc');
+          simVarTableBody.innerHTML = `
+            <tr><td style="padding:6px 8px; color:#818cf8;">a</td><td style="padding:6px 8px; color:#fff;">${userA}</td><td style="padding:6px 8px; color:#94a3b8;">Angka pertama</td></tr>
+            <tr><td style="padding:6px 8px; color:#818cf8;">b</td><td style="padding:6px 8px; color:#fff;">${userB}</td><td style="padding:6px 8px; color:#94a3b8;">Angka kedua</td></tr>
+            <tr><td style="padding:6px 8px; color:#818cf8;">hasil</td><td style="padding:6px 8px; font-weight:bold; color:#6ee7b7;" class="val-updated">${sum}</td><td style="padding:6px 8px; color:#34d399;">Dihitung (${userA} + ${userB})</td></tr>
+          `;
+          simExplanation.innerHTML = `Proses pertambahan dijalankan: <code>${userA} + ${userB} = ${sum}</code>. Nilai ${sum} disimpan ke variabel <code>hasil</code>.`;
+        } else if (simStep === 3) {
+          const sum = userA + userB;
+          highlightSimNode('node-t-output');
+          simExplanation.innerHTML = `Komputer mencetak hasil ke layar: <strong>${sum}</strong>!`;
+          simFinalVerdict.style.display = 'block';
+          simFinalVerdict.style.background = 'rgba(56, 189, 248, 0.15)';
+          simFinalVerdict.style.color = '#38bdf8';
+          simFinalVerdict.style.border = '1px solid rgba(56, 189, 248, 0.3)';
+          simFinalVerdict.innerHTML = `🖥️ Layar Monitor Menampilkan: ${sum}`;
+        } else if (simStep === 4) {
+          highlightSimNode('node-t-end', true);
+          simFinished = true;
+          sound.playSuccess();
+          stopAutoPlay();
+          simExplanation.innerHTML = `Eksekusi selesai dengan sempurna! Alur berhenti di kotak <strong>SELESAI</strong>.`;
+        }
+      } else {
+        // Steps for Cek Bilangan Positif / Negatif
+        if (simStep === 1) {
+          highlightSimNode('node-c-input');
+          simVarTableBody.innerHTML = `
+            <tr><td style="padding:6px 8px; color:#818cf8;">angka</td><td style="padding:6px 8px; font-weight:bold; color:#fff;" class="val-updated">${userAngka}</td><td style="padding:6px 8px; color:#94a3b8;">Angka yang dimasukkan</td></tr>
+            <tr><td style="padding:6px 8px; color:#818cf8;">kategori</td><td style="padding:6px 8px; color:#64748b;">(belum dievaluasi)</td><td style="padding:6px 8px; color:#64748b;">Menunggu IF</td></tr>
+          `;
+          simExplanation.innerHTML = `Komputer membaca angka <strong>${userAngka}</strong>. Sistem bersiap mengecek apakah angka ini bernilai &ge; 0.`;
+        } else if (simStep === 2) {
+          highlightSimNode('node-c-cond');
+          const isPositif = userAngka >= 0;
+          simExplanation.innerHTML = `Komputer memeriksa kondisi: <em>"Apakah ${userAngka} &gt;= 0?"</em><br />Hasilnya adalah <strong style="color:${isPositif ? '#34d399':'#f43f5e'}">${isPositif ? 'BENAR (TRUE) &rarr; Berbelok ke Kanan (Positif)' : 'SALAH (FALSE) &rarr; Berbelok ke Kiri (Negatif)'}</strong>.`;
+        } else if (simStep === 3) {
+          const isPositif = userAngka >= 0;
+          if (isPositif) {
+            highlightSimNode('node-c-positif', true);
+            simVarTableBody.innerHTML = `
+              <tr><td style="padding:6px 8px; color:#818cf8;">angka</td><td style="padding:6px 8px; color:#fff;">${userAngka}</td><td style="padding:6px 8px; color:#94a3b8;">Angka yang dimasukkan</td></tr>
+              <tr><td style="padding:6px 8px; color:#818cf8;">kategori</td><td style="padding:6px 8px; font-weight:bold; color:#34d399;" class="val-updated">POSITIF</td><td style="padding:6px 8px; color:#34d399;">Karena ${userAngka} &ge; 0</td></tr>
+            `;
+            simExplanation.innerHTML = `Angka <strong>${userAngka}</strong> dikategorikan sebagai <strong>BILANGAN POSITIF</strong> karena bernilai 0 atau lebih.`;
+            simFinalVerdict.style.display = 'block';
+            simFinalVerdict.style.background = 'rgba(16, 185, 129, 0.15)';
+            simFinalVerdict.style.color = '#34d399';
+            simFinalVerdict.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+            simFinalVerdict.innerHTML = `✨ Hasil: Angka ${userAngka} adalah BILANGAN POSITIF`;
+          } else {
+            highlightSimNode('node-c-negatif', false);
+            simVarTableBody.innerHTML = `
+              <tr><td style="padding:6px 8px; color:#818cf8;">angka</td><td style="padding:6px 8px; color:#fff;">${userAngka}</td><td style="padding:6px 8px; color:#94a3b8;">Angka yang dimasukkan</td></tr>
+              <tr><td style="padding:6px 8px; color:#818cf8;">kategori</td><td style="padding:6px 8px; font-weight:bold; color:#f43f5e;" class="val-updated">NEGATIF</td><td style="padding:6px 8px; color:#f87171;">Karena ${userAngka} &lt; 0</td></tr>
+            `;
+            simExplanation.innerHTML = `Angka <strong>${userAngka}</strong> dikategorikan sebagai <strong>BILANGAN NEGATIF</strong> karena berada di bawah 0.`;
+            simFinalVerdict.style.display = 'block';
+            simFinalVerdict.style.background = 'rgba(244, 63, 94, 0.15)';
+            simFinalVerdict.style.color = '#f87171';
+            simFinalVerdict.style.border = '1px solid rgba(244, 63, 94, 0.3)';
+            simFinalVerdict.innerHTML = `❄️ Hasil: Angka ${userAngka} adalah BILANGAN NEGATIF`;
+          }
+        } else if (simStep === 4) {
+          highlightSimNode('node-c-end', true);
+          simFinished = true;
+          sound.playSuccess();
+          stopAutoPlay();
+          simExplanation.innerHTML = `Alur telah berakhir di titik <strong>SELESAI</strong>. Status bilangan berhasil ditentukan!`;
+        }
+      }
+    }
+
+    function resetSimulation() {
+      stopAutoPlay();
+      simStep = 0;
+      simFinished = false;
+      stepBadge.textContent = 'Langkah: 0';
+      simFinalVerdict.style.display = 'none';
+      renderSimulatorSvg();
+      
+      if (currentMode === 'tambah') {
+        simVarTableBody.innerHTML = `
+          <tr><td style="padding:6px 8px; color:#818cf8;">a</td><td style="padding:6px 8px; color:#fff;">${userA}</td><td style="padding:6px 8px; color:#94a3b8;">Input angka 1</td></tr>
+          <tr><td style="padding:6px 8px; color:#818cf8;">b</td><td style="padding:6px 8px; color:#fff;">${userB}</td><td style="padding:6px 8px; color:#94a3b8;">Input angka 2</td></tr>
+          <tr><td style="padding:6px 8px; color:#818cf8;">hasil</td><td style="padding:6px 8px; color:#64748b;">?</td><td style="padding:6px 8px; color:#64748b;">Belum dihitung</td></tr>
+        `;
+        simExplanation.innerHTML = `Siap! Tekan tombol <strong>"Langkah Berikutnya (Step)"</strong> untuk menjalankan alur pertambahan.`;
+      } else {
+        simVarTableBody.innerHTML = `
+          <tr><td style="padding:6px 8px; color:#818cf8;">angka</td><td style="padding:6px 8px; color:#fff;">${userAngka}</td><td style="padding:6px 8px; color:#94a3b8;">Angka uji</td></tr>
+          <tr><td style="padding:6px 8px; color:#818cf8;">kategori</td><td style="padding:6px 8px; color:#64748b;">?</td><td style="padding:6px 8px; color:#64748b;">Menunggu IF</td></tr>
+        `;
+        simExplanation.innerHTML = `Siap! Coba ubah angka di atas (positif atau negatif), lalu klik <strong>"Langkah Berikutnya (Step)"</strong> untuk melihat ke mana alurnya pergi.`;
+      }
+    }
+
+    function startAutoPlay() {
+      if (simFinished) resetSimulation();
+      autoPlayLabel.textContent = '⏸ Jeda';
+      simInterval = setInterval(executeSimStep, 1100);
+    }
+
+    function stopAutoPlay() {
+      if (simInterval) clearInterval(simInterval);
+      simInterval = null;
+      autoPlayLabel.textContent = '▶ Putar Otomatis';
+    }
+
+    // Button event listeners
+    stepBtn.addEventListener('click', () => { stopAutoPlay(); executeSimStep(); });
+    autoPlayBtn.addEventListener('click', () => { simInterval ? stopAutoPlay() : startAutoPlay(); });
+    resetBtn.addEventListener('click', resetSimulation);
+
+    modeTambahBtn.addEventListener('click', () => {
+      sound.playClick();
+      currentMode = 'tambah';
+      modeTambahBtn.classList.add('active');
+      modeCekBtn.classList.remove('active');
+      setupInputBar();
+      resetSimulation();
+    });
+
+    modeCekBtn.addEventListener('click', () => {
+      sound.playClick();
+      currentMode = 'cek';
+      modeCekBtn.classList.add('active');
+      modeTambahBtn.classList.remove('active');
+      setupInputBar();
+      resetSimulation();
+    });
+
+    // =========================================================================
+    // SLIDE CONTROLLER: TANTANGAN 1 (LULUS VS REMEDIAL)
+    // =========================================================================
+    const challengeTabQuestion = document.getElementById('challengeTabQuestion');
+    const challengeTabAnswer = document.getElementById('challengeTabAnswer');
+    const challengeSlide1 = document.getElementById('challengeSlide1');
+    const challengeSlide2 = document.getElementById('challengeSlide2');
+    const openAnswerBtn = document.getElementById('openAnswerBtn');
+    const backToQuestionBtn = document.getElementById('backToQuestionBtn');
+
+    function showChallengeSlide(slideNum) {
+      sound.playClick();
+      if (slideNum === 1) {
+        challengeTabQuestion.classList.add('active');
+        challengeTabAnswer.classList.remove('active');
+        challengeSlide1.style.display = 'block';
+        challengeSlide2.style.display = 'none';
+      } else {
+        challengeTabAnswer.classList.add('active');
+        challengeTabQuestion.classList.remove('active');
+        challengeSlide1.style.display = 'none';
+        challengeSlide2.style.display = 'block';
+        sound.playSuccess();
+      }
+    }
+
+    challengeTabQuestion.addEventListener('click', () => showChallengeSlide(1));
+    challengeTabAnswer.addEventListener('click', () => showChallengeSlide(2));
+    openAnswerBtn.addEventListener('click', () => showChallengeSlide(2));
+    backToQuestionBtn.addEventListener('click', () => showChallengeSlide(1));
+
+    // =========================================================================
+    // SLIDE CONTROLLER: TANTANGAN 2 (PERKALIAN)
+    // =========================================================================
+    const multTabQuestion = document.getElementById('multTabQuestion');
+    const multTabAnswer = document.getElementById('multTabAnswer');
+    const multSlide1 = document.getElementById('multSlide1');
+    const multSlide2 = document.getElementById('multSlide2');
+    const openMultAnswerBtn = document.getElementById('openMultAnswerBtn');
+    const backToMultQuestionBtn = document.getElementById('backToMultQuestionBtn');
+
+    function showMultSlide(slideNum) {
+      sound.playClick();
+      if (slideNum === 1) {
+        multTabQuestion.classList.add('active');
+        multTabAnswer.classList.remove('active');
+        multSlide1.style.display = 'block';
+        multSlide2.style.display = 'none';
+      } else {
+        multTabAnswer.classList.add('active');
+        multTabQuestion.classList.remove('active');
+        multSlide1.style.display = 'none';
+        multSlide2.style.display = 'block';
+        sound.playSuccess();
+      }
+    }
+
+    multTabQuestion.addEventListener('click', () => showMultSlide(1));
+    multTabAnswer.addEventListener('click', () => showMultSlide(2));
+    openMultAnswerBtn.addEventListener('click', () => showMultSlide(2));
+    backToMultQuestionBtn.addEventListener('click', () => showMultSlide(1));
+
+    // Bootstrap
+    window.addEventListener('DOMContentLoaded', () => {
+      setupInputBar();
+      resetSimulation();
+    });
+  </script>
+</body>
+</html>
